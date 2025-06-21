@@ -39,8 +39,7 @@ ml_file_sorter/
 ├── model/
 │   └── classifier.pkl           # Trained classifier
 ├── train.py                     # Script to train and save the model
-├── sorter.py                    # Script to sort files using the model
-└── utils.py                     # (Optional) Helper functions
+└── sorter.py                    # Script to sort files using the model
 ```
 
 ## Usage
