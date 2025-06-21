@@ -59,8 +59,6 @@ python3 sorter.py
 ```
 Files will be moved into folders/<predicted_category>/.
 
-## Future Improvements
+## Improvements
 - Add support for file extension and metadata features
 - Include user feedback to refine predictions (semi-supervised learning)
-- Build a CLI or GUI interface
-- Use a more advanced model like Logistic Regression or SVM for longer names
