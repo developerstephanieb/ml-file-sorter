@@ -1,0 +1,15 @@
+# Environment
+.venv/
+env/
+venv/
+.history
+.vscode
+
+# Model files
+model/*.pkl
+
+# Data and sorted files
+data/files_to_sort/*
+!data/labeled_files.csv
+*.log
+.DS_Store
