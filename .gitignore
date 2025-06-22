@@ -13,3 +13,5 @@ data/files_to_sort/*
 !data/labeled_files.csv
 *.log
 .DS_Store
+/folders/Pictures
+/folders/School
