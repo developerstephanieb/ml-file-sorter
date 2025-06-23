@@ -2,8 +2,8 @@ import os
 import csv
 
 # Define your parameters here 
-scan_folder = r"folders\Pictures"  # or just "folders/Pictures" for cross-platform
-mark_files_as = "School"
+scan_folder = r"folders\School"  # or just "folders/Pictures" for cross-platform
+mark_files_as = "School"  # Category to mark files as
 save_path = r"data\labeled_files.csv"
 
 def main():
