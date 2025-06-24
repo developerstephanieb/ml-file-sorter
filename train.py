@@ -19,9 +19,11 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 
+FILE = "data/ia_files.csv"
+categories = ['gutenberg', 'softwarelibrary_msdos', 'folkscanomy']
 
 def main():
-    df = pd.read_csv("data/labeled_files.csv")
+    df = pd.read_csv("data/ia_files.csv")
 
     X = df['file_name']
     y = df['category']
@@ -42,6 +44,7 @@ def main():
     print('_' * 50)
     best_model = None
     best_f1 = 0.0
+    best_accuracy = 0.0
     for name, algo in test_algorithems.items():
         model = Pipeline([
             ('tfidf', TfidfVectorizer()), 
@@ -50,31 +53,36 @@ def main():
         model.fit(x_train, y_train)
         y_pred = model.predict(x_test)
         f1 = f1_score(y_test, y_pred, average='weighted')
+        best_accuracy  = accuracy_score(y_test, y_pred)
         if f1 > best_f1:
             best_f1 = f1
             best_model = algo
+            best_accuracy = accuracy_score
+
         
         
         print(f"{name} F1 Score: {f1:.4f}")
-        print(classification_report(y_test, y_pred, target_names=['Work','School', 'Pictures']))
-        cm = confusion_matrix(y_test, y_pred, labels=['Work','School', 'Pictures'])
+        print(classification_report(y_test, y_pred, target_names=categories))
+        cm = confusion_matrix(y_test, y_pred, labels=categories)
         plt.figure(figsize=(6, 5))
-        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=['work', 'school', 'pictures'], yticklabels=['work', 'school', 'pictures'])
+        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=categories, yticklabels=categories)
         plt.title(f'Confusion Matrix for {name}')
         plt.xlabel('Predicted')
         plt.ylabel('Actual')
         plt.tight_layout()
         plt.show()
     
+    print(f"Best Model: {best_model.__class__.__name__} with accuaracy: {best_accuracy:.4f}")
+    print('_' * 50)
 
-    df = pd.read_csv("data/labeled_files.csv")
+    df = pd.read_csv(FILE)
 
     X = df['file_name']
     y = df['category']
 
     model = Pipeline([
        ('tfidf', TfidfVectorizer()),
-       ('clf', best_model if best_model else MultinomialNB())  # Use the best model or default to MultinomialNB
+       ('clf', best_model)  # Use the best model or default to MultinomialNB
     ])
 
     model.fit(X, y)
