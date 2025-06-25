@@ -9,6 +9,7 @@ if __name__ == "__main__":
     TRAIN_DIR = "data/ia_files.csv"
 
     training_list = set()
+
     if os.path.exists(TRAIN_DIR):
         with open(TRAIN_DIR, 'r', encoding='utf-8') as f:
             for line in f:

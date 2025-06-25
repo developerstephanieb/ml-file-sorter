@@ -18,17 +18,35 @@ import os
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-
+TEST_DIR = "data/Test_files.csv"  # Path to the training file
 FILE = "data/ia_files.csv"
-categories = ['gutenberg', 'softwarelibrary_msdos', 'folkscanomy']
-
+categories = ['gutenberg', 'softwarelibrary_msdos', 'folkscanomy','prelinger']
+include_extentions = False  # Set to True if you want to include file extensions in the model
 def main():
     df = pd.read_csv("data/ia_files.csv")
+
+
+    testing_set = set()
+
+    if os.path.exists(TEST_DIR):
+        with open(TEST_DIR, 'r', encoding='utf-8') as f:
+            for line in f:
+                parts = line.strip().split(',')
+                if len(parts) >= 2:
+                    testing_set.add(parts[0])
+
+    df = df[~df['file_name'].isin(testing_set)]
 
     X = df['file_name']
     y = df['category']
 
+    if not include_extentions:
+        # Remove file extensions from the file names to compare preformance
+        X = X.apply(lambda x: os.path.splitext(x)[0])
+            
+
     x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
 
     test_algorithems = {
         'MultinomialNB': MultinomialNB(),
@@ -43,7 +61,6 @@ def main():
     print("Training individual models...")
     print('_' * 50)
     best_model = None
-    best_f1 = 0.0
     best_accuracy = 0.0
     for name, algo in test_algorithems.items():
         model = Pipeline([
@@ -52,16 +69,12 @@ def main():
         ])
         model.fit(x_train, y_train)
         y_pred = model.predict(x_test)
-        f1 = f1_score(y_test, y_pred, average='weighted')
-        best_accuracy  = accuracy_score(y_test, y_pred)
-        if f1 > best_f1:
-            best_f1 = f1
-            best_model = algo
-            best_accuracy = accuracy_score
-
+        accuracy = accuracy_score(y_test, y_pred)
+        if accuracy > best_accuracy:  
+            best_accuracy = accuracy
+            best_model = algo      
         
-        
-        print(f"{name} F1 Score: {f1:.4f}")
+        print(f"{algo.__class__.__name__} Accuracy: {accuracy:.4f}")
         print(classification_report(y_test, y_pred, target_names=categories))
         cm = confusion_matrix(y_test, y_pred, labels=categories)
         plt.figure(figsize=(6, 5))
