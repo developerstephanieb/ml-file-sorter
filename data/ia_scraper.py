@@ -8,11 +8,22 @@ import time
 
 def get_filenames(collection, num_file_names=2000, save_dir=r'data\ia_files.csv'):
 
+    TEST_FILE_DIR = r'data\test_files'
+    Test_file_Names = set()
+    if os.path.exists(TEST_FILE_DIR):
+        for dirpath,dirnames, filenames in os.walk(TEST_FILE_DIR):
+            for filename in filenames:
+                Test_file_Names.add(filename.lower())
+    else:
+        print(f"WARNING!!!:Test file directory '{TEST_FILE_DIR}' does not exist, skipping test file check.")
+
+
     search = ia.search_items(
         f'collection:{collection}',
         fields=['identifier', 'title', 'date', 'mediatype']
     )
 
+    
     print(f"Searching: {collection}....this may take some time")
     
     search_list = list(search)
@@ -62,7 +73,7 @@ def get_filenames(collection, num_file_names=2000, save_dir=r'data\ia_files.csv'
         elif selected_file is None:
             print(f"No matching file types found in {file_count} files for item {item_data.get('identifier')} : {collection}")
         
-        if selected_file is not None: 
+        if selected_file is not None and selected_file['name'].lower() not in Test_file_Names: 
             found_files.append({
                 'id': item_data['identifier'],
                 'title': item_data.get('title', 'No title'),
@@ -148,8 +159,8 @@ if __name__ == "__main__":
     initialize_csv(save_dir)
     
     collection_targets = [
-        #'gutenburg',
-        #"folkscanomy", 
+        #'gutenberg',
+        "folkscanomy", 
         "softwarelibrary_msdos", 
         "prelinger",
     ]
@@ -158,7 +169,7 @@ if __name__ == "__main__":
         print('-' * 50)
         print(f"Processing collection: {collection}")
 
-        files = get_filenames(collection, num_file_names=1000, save_dir=save_dir)  # Reduced for testing
+        files = get_filenames(collection, num_file_names=4000, save_dir=save_dir)  # Reduced for testing
         if not files:
             print(f"No files found for collection: {collection}")
             continue
