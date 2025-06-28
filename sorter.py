@@ -7,7 +7,7 @@ if __name__ == "__main__":
     SOURCE_DIR = "data/files_to_sort"
     DEST_BASE_DIR = "folders"
     TRAIN_DIR = "data/ia_files.csv"
-
+    
     training_list = set()
 
     if os.path.exists(TRAIN_DIR):
