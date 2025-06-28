@@ -87,18 +87,8 @@ def main():
     
     print(f"Best Model: {best_model.__class__.__name__} with accuaracy: {best_accuracy:.4f}")
     print('_' * 50)
-
-    df = pd.read_csv(FILE)
-
-    X = df['file_name']
-    y = df['category']
-
-    model = Pipeline([
-       ('tfidf', TfidfVectorizer()),
-       ('clf', best_model)  # Use the best model or default to MultinomialNB
-    ])
-
-    model.fit(X, y)
+    
+    model = best_model
 
     os.makedirs("model", exist_ok=True)
     joblib.dump(model, "model/classifier.pkl")
